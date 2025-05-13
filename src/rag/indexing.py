@@ -9,8 +9,8 @@ from langchain_text_splitters import TokenTextSplitter
 from langchain.schema.document import Document
 from langchain_chroma import Chroma
 
-from rag.embedding import get_embedding_function
-from rag.utils import generate_date_range
+from src.rag.embedding import get_embedding_function
+from src.rag.utils import generate_date_range
 
 
 CHROMA_PATH = "chroma"
@@ -32,7 +32,7 @@ def main():
     start_date = date(2022, 11, 1)
     end_date = date(2025, 3, 17)
     for news_date in generate_date_range(start_date, end_date):
-        filename = f'data/news_{news_date}.csv'
+        filename = f'data/news/news_{news_date}.csv' # TODO : use config
         if not os.path.exists(filename):
             print(f'No news data found for {news_date}')
             continue

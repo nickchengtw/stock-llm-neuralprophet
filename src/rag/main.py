@@ -7,10 +7,10 @@ import csv
 from retry import retry
 from langchain.vectorstores import Chroma
 
-from rag.embedding import get_embedding_function
-from rag.api import get_model, LLMProvider, get_reponse
-from rag.prompt import get_prompt
-from rag.utils import generate_date_range
+from src.rag.embedding import get_embedding_function
+from src.rag.api import get_model, LLMProvider, get_reponse
+from src.rag.prompt import get_prompt
+from src.rag.utils import generate_date_range
 
 CHROMA_PATH = "chroma"
 
@@ -31,7 +31,7 @@ def main():
             factor, explanation = query_rag(company, results)
             print(factor, explanation)
             print("Saving result")
-            append_row_to_csv(f'./result_{company}.csv', news_date, factor, explanation, len(results))
+            append_row_to_csv(f'./data/factors/result_{company}.csv', news_date, factor, explanation, len(results)) # TODO : use config
         else:
             print(f"No relevant news found in the DB at {str(news_date)}.")
     
