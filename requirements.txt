@@ -1,0 +1,13 @@
+openai
+neuralprophet
+pandas
+requests
+python-dotenv
+ollama
+chromadb
+retry
+langchain
+langchain-community
+langchain-ollama
+langchain-openai
+langchain-chroma
