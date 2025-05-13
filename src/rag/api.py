@@ -16,17 +16,19 @@ class LLMProvider(Enum):
     HUGGINGFACE = "huggingface"
 
 
-def get_model(provider: LLMProvider, model_name: str):
+def get_model(provider: LLMProvider, model_name: str, seed: int = 42, temperature: float = 0.0):
     """Function to get the appropriate LLM based on the provider."""
 
     if provider == LLMProvider.OLLAMA:
-        return OllamaLLM(model=model_name)
+        return OllamaLLM(model=model_name, seed=seed, temperature=temperature)
     elif provider == LLMProvider.OPENAI:
         # Initialize OpenAI LLM with the API key from config
         return ChatOpenAI(
             openai_api_key=os.getenv("API_KEY"),
             openai_api_base="https://openrouter.ai/api/v1",
             model=model_name,
+            seed=seed,
+            temperature=temperature,
         )
     raise ValueError(f"Unsupported provider: {provider}")
 
