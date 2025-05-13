@@ -34,17 +34,7 @@ def main():
             append_row_to_csv(f'./data/factors/result_{company}.csv', news_date, factor, explanation, len(results)) # TODO : use config
         else:
             print(f"No relevant news found in the DB at {str(news_date)}.")
-    
-    # news_date = date(2025, 3, 17)
-    # results = query_db(news_date, company)
-    # if len(results):
-    #     factor, explanation = query_rag(company, results)
-    #     print(factor, explanation)
-    #     print("Saving result")
-    #     append_row_to_csv(f'./result_{company}.csv', news_date, factor, explanation, len(results))
-    # else:
-    #     print(f"No relevant news found in the DB at {str(news_date)}.")
-    
+
 
 def parse_response(response: str) -> tuple:
     cleaned_text = response.strip()
@@ -64,8 +54,7 @@ def query_rag(company: str, results):
     print(prompt)
 
     print("Generating response text")
-    # model = get_model(LLMProvider.OPENAI, "deepseek/deepseek-r1-zero:free")
-    model = get_model(LLMProvider.OLLAMA, "cwchang/llama-3-taiwan-8b-instruct")
+    model = get_model(LLMProvider.OLLAMA, "cwchang/llama-3-taiwan-8b-instruct") # TODO : use config
     response_text = get_reponse(LLMProvider.OLLAMA, model.invoke(prompt))
 
     sources = [doc.metadata.get("id", None) for doc, _score in results]

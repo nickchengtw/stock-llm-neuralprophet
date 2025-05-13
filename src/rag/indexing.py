@@ -43,12 +43,6 @@ def main():
         print(f'{len(chunks)} chunks to insert')
         add_to_chroma(chunks)
 
-    # chunks = split_documents([Document('短內容', metadata={'uuid':'test1', 'publish_at':'2025-04-02 16:00:00'})])
-    # print(chunks)
-    # add_to_chroma(chunks)
-    # chunks = split_documents([Document('短內容'*3000, metadata={'uuid':'test2', 'publish_at':'2025-04-02 16:00:00'})])
-    # print(chunks)
-    # add_to_chroma(chunks)
 
 def split_documents(documents: list[Document]):
     text_splitter = TokenTextSplitter(

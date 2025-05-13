@@ -11,3 +11,4 @@ langchain-community
 langchain-ollama
 langchain-openai
 langchain-chroma
+pytest
