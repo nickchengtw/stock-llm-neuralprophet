@@ -1,6 +1,7 @@
 import os
 import re
 import warnings
+import json
 
 os.environ["TF_ENABLE_ONEDNN_OPTS"] = "0"
 warnings.filterwarnings(
@@ -16,14 +17,18 @@ warnings.filterwarnings(
 )
 
 import pandas as pd
+from sklearn.model_selection import ParameterGrid
 from neuralprophet import NeuralProphet, set_log_level, set_random_seed
 
 from src.model.utils import val_mape
+from src.model.features import add_stock_price_feature
 
 set_log_level("ERROR")
 
 VALIDATION_PERCENTAGE = 0.2
-
+LAG_REGRESSORS = [
+    'volume', 'high_low_diff', 'MA'
+]
 
 def train_and_eval(df, m):
     print(f"Data range: {df['ds'].iloc[0]} ~ {df['ds'].iloc[-1]}")
@@ -45,14 +50,93 @@ def train_and_eval(df, m):
     return rmse, mape
 
 
+def grid_search(df, param_grid):
+    results = []
+    # Iterate over each combination of hyperparameters
+    for params in ParameterGrid(param_grid):
+        # Initialize the NeuralProphet model with current hyperparameters
+        print(params)
+        init_params = {k: v for k, v in params.items() if k in ['yearly_seasonality', 'weekly_seasonality', 'n_lags']}
+        print("init params:", init_params)
+        m = NeuralProphet(**init_params)
+        
+        if params.get('use_holidays', False):
+            m = m.add_country_holidays("TW")
+
+        columns = ['ds', 'y']
+        for lag_name in LAG_REGRESSORS:
+            if params.get(lag_name, 0) > 0:
+                print(f"Adding lagged regressor: {lag_name} with n_lags={params.get(lag_name)}")
+                m.add_lagged_regressor(lag_name, n_lags=params.get(lag_name))
+                columns.append(lag_name)
+        
+        rmse, mape = train_and_eval(df[columns], m)
+        results.append({**params, 'RMSE': rmse, 'MAPE': mape})
+    return results
+
+TUNE_STEPS = {
+    "default": {
+        "params": {},
+        "candidate_cols": [],
+        "top_n": 0
+    },
+    "add_period": {
+        "params": {
+            "yearly_seasonality": [True],
+            "weekly_seasonality": [True],
+        },
+        "candidate_cols": ['yearly_seasonality', 'weekly_seasonality'],
+        "top_n": 1
+    },
+    "add_ar": {
+        "params": {
+            'n_lags': range(1, 16)
+        },
+        "candidate_cols": ['n_lags'],
+        "top_n": 4
+    },
+    "tune_close": {
+        "params": {
+            'yearly_seasonality': [True, False],
+            'weekly_seasonality': [True, False],
+            'use_holidays': [True, False],
+        },
+        "candidate_cols": ['yearly_seasonality', 'weekly_seasonality', 'n_lags', 'use_holidays'],
+        "top_n": 1
+    },
+    "tune_vol_price": {
+        "params": {
+            'volume': [0, 5, 10],
+            'high_low_diff': [0, 5, 10],
+            'MA': [0, 5, 10]
+        },
+        "candidate_cols": ['yearly_seasonality', 'weekly_seasonality', 'n_lags', 'use_holidays', 'volume', 'high_low_diff', 'MA'],
+        "top_n": 1
+    }
+}
+
 def main():
     print("Loading data...")
-    df = pd.read_csv("data/stocks/2330_stock_data_0317.csv", parse_dates=True)[["ds", "y"]]
-
-    print("Initializing NeuralProphet model...")
-    m = NeuralProphet()
-    rmse, mape = train_and_eval(df, m)
-    print(f"RMSE={rmse:.2f}, MAPE={mape:.2f}%")
+    df = pd.read_csv("data/stocks/2330_stock_data_0317.csv", parse_dates=True)
+    df = add_stock_price_feature(df)
+    print(df.info())
+    
+    optimal_params = {}
+    for step_name, step in TUNE_STEPS.items():
+        param_grid = {**optimal_params, **step['params']}
+        print(f"Grid search: {param_grid}")
+        results = grid_search(df, param_grid)
+        
+        results_df = pd.DataFrame(results)
+        results_df = results_df.sort_values(by="MAPE")
+        print(results_df.head())
+        results_df.to_csv(f'reports/{step_name}.csv')
+        
+        best_candidates = results_df.sort_values(by="MAPE")[step['candidate_cols']].head(step['top_n']).to_dict(orient="list")
+        print('best_candidates:', best_candidates)
+        optimal_params = best_candidates
+        with open(f"reports/{step_name}.json", "w") as json_file:
+            json.dump(optimal_params, json_file, indent=4)
 
 
 if __name__ == "__main__":

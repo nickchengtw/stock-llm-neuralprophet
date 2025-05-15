@@ -12,3 +12,4 @@ langchain-ollama
 langchain-openai
 langchain-chroma
 pytest
+statsmodels
