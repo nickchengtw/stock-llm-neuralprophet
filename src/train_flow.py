@@ -27,7 +27,17 @@ set_log_level("ERROR")
 
 VALIDATION_PERCENTAGE = 0.2
 LAG_REGRESSORS = [
-    'volume', 'high_low_diff', 'MA'
+    'volume',
+    'high_low_diff',
+    'MA',
+    'foreign',
+    'investment',
+    'dealer',
+    'ratio_over_400_shares',
+    'shareholders_400_to_600',
+    'shareholders_600_to_800',
+    'shareholders_800_to_1000',
+    'ratio_over_1000_shares',
 ]
 
 def train_and_eval(df, m):
@@ -104,7 +114,7 @@ TUNE_STEPS = {
         "candidate_cols": ['yearly_seasonality', 'weekly_seasonality', 'n_lags', 'use_holidays'],
         "top_n": 1
     },
-    "tune_vol_price": {
+    "lag_vol_price": {
         "params": {
             'volume': [0, 5, 10],
             'high_low_diff': [0, 5, 10],
@@ -112,7 +122,54 @@ TUNE_STEPS = {
         },
         "candidate_cols": ['yearly_seasonality', 'weekly_seasonality', 'n_lags', 'use_holidays', 'volume', 'high_low_diff', 'MA'],
         "top_n": 1
-    }
+    },
+    "lag_inst": {
+        "params": {
+            'foreign': [1, 3, 5],
+            'investment': [1, 3, 5],
+            'dealer': [1, 3, 5]
+        },
+        "candidate_cols": [
+            'yearly_seasonality',
+            'weekly_seasonality',
+            'n_lags',
+            'use_holidays',
+            'volume',
+            'high_low_diff',
+            'MA',
+            'foreign',
+            'investment',
+            'dealer'
+        ],
+        "top_n": 1
+    },
+    "lag_share": {
+        "params": {
+            'ratio_over_400_shares': [0, 5],
+            'shareholders_400_to_600': [0, 5],
+            'shareholders_600_to_800': [0, 5],
+            'shareholders_800_to_1000': [0, 5],
+            'ratio_over_1000_shares': [0, 5],
+        },
+        "candidate_cols": [
+            'yearly_seasonality',
+            'weekly_seasonality',
+            'n_lags',
+            'use_holidays',
+            'volume',
+            'high_low_diff',
+            'MA',
+            'foreign',
+            'investment',
+            'dealer',
+            'ratio_over_400_shares',
+            'shareholders_400_to_600',
+            'shareholders_600_to_800',
+            'shareholders_800_to_1000',
+            'ratio_over_1000_shares',
+        ],
+        "top_n": 1
+    },
 }
 
 def main():
