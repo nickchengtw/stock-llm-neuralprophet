@@ -1,0 +1,5 @@
+start_date: 2022-11-01
+end_date: 2025-03-17
+model_name: cwchang/llama-3-taiwan-8b-instruct
+companys:
+  - 台積電

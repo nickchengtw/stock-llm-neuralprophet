@@ -1,9 +1,8 @@
-import argparse
 from datetime import date, datetime
-import pandas as pd
 import os
 import csv
 
+import yaml
 from retry import retry
 from langchain.vectorstores import Chroma
 
@@ -21,14 +20,24 @@ embedding_function = get_embedding_function()
 db = Chroma(persist_directory=CHROMA_PATH, embedding_function=embedding_function)
 
 def main():
-    company = '台積電'
+    # Load YAML config
+    with open("config.yaml", "r", encoding="utf-8") as f:
+        config = yaml.safe_load(f)
+    COMPANYS = config.get("companys", [])
+    START_DATE = config["start_date"]
+    END_DATE = config["end_date"]
+    MODEL_NAME = config["model_name"]
     
-    start_date = date(2022, 11, 1)
-    end_date = date(2025, 3, 17)
+    for company in COMPANYS:
+        generate_factor(company, START_DATE, END_DATE, MODEL_NAME)
+
+
+def generate_factor(company, start_date, end_date, model_name):
+    print(f"Generating factor for {company} from {start_date} to {end_date}")
     for news_date in generate_date_range(start_date, end_date):
         results = query_db(news_date, company)
         if len(results):
-            factor, explanation = query_rag(company, results)
+            factor, explanation = query_rag(company, results, model_name)
             print(factor, explanation)
             print("Saving result")
             append_row_to_csv(f'./data/factors/result_{company}.csv', news_date, factor, explanation, len(results)) # TODO : use config
@@ -49,12 +58,12 @@ def query_db(news_date, company):
     return results
 
 @retry(exceptions=ValueError, tries=10, delay=3)
-def query_rag(company: str, results):
+def query_rag(company: str, results, model_name):
     prompt = get_prompt(company, results)
     print(prompt)
 
     print("Generating response text")
-    model = get_model(LLMProvider.OLLAMA, "cwchang/llama-3-taiwan-8b-instruct") # TODO : use config
+    model = get_model(LLMProvider.OLLAMA, model_name) # TODO : use config
     response_text = get_reponse(LLMProvider.OLLAMA, model.invoke(prompt))
 
     sources = [doc.metadata.get("id", None) for doc, _score in results]

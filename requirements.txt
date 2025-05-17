@@ -13,3 +13,4 @@ langchain-openai
 langchain-chroma
 pytest
 statsmodels
+pyyaml
