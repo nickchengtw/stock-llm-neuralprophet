@@ -2,6 +2,7 @@ import os
 import re
 import warnings
 import json
+import argparse
 
 os.environ["TF_ENABLE_ONEDNN_OPTS"] = "0"
 warnings.filterwarnings(
@@ -172,9 +173,9 @@ TUNE_STEPS = {
     },
 }
 
-def main():
+def train_flow(stock_data_path):
     print("Loading data...")
-    df = pd.read_csv("data/stocks/2330_stock_data_0317.csv", parse_dates=True)
+    df = pd.read_csv(stock_data_path, parse_dates=True)
     df = add_stock_price_feature(df)
     print(df.info())
     
@@ -195,6 +196,16 @@ def main():
         with open(f"reports/{step_name}.json", "w") as json_file:
             json.dump(optimal_params, json_file, indent=4)
 
+def main():
+    # Set up argument parser
+    parser = argparse.ArgumentParser(description='Read stock data from a file')
+    parser.add_argument('filepath', type=str, help='Path to the stock data file')
+
+    # Parse arguments
+    args = parser.parse_args()
+    file_path = args.filepath
+
+    train_flow(file_path)
 
 if __name__ == "__main__":
     main()
