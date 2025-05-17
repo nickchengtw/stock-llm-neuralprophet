@@ -23,7 +23,7 @@ db = Chroma(persist_directory=CHROMA_PATH, embedding_function=embedding_function
 def main():
     company = '台積電'
     
-    start_date = date(2024, 9, 7)
+    start_date = date(2022, 11, 1)
     end_date = date(2025, 3, 17)
     for news_date in generate_date_range(start_date, end_date):
         results = query_db(news_date, company)
