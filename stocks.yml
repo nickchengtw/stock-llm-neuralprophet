@@ -1,0 +1,132 @@
+stocks:
+  - symbol: 2382
+    stock_name: '廣達'
+    keywords:
+      - '科技'
+      - '伺服器'
+      - 'AI'
+
+  - symbol: 3231
+    stock_name: '緯創'
+    keywords:
+      - '科技'
+      - '代工'
+      - '電子'
+
+  - symbol: 2330
+    stock_name: '台積電'
+    keywords:
+      - '科技'
+      - '半導體'
+      - '晶片'
+
+  - symbol: 3443
+    stock_name: '創意'
+    keywords:
+      - '半導體'
+      - '設計'
+      - 'IC'
+
+  - symbol: 3661
+    stock_name: '世芯'
+    keywords:
+      - '半導體'
+      - 'ASIC'
+      - '設計'
+
+  - symbol: 3035
+    stock_name: '智原'
+    keywords:
+      - 'IC設計'
+      - '半導體'
+
+  - symbol: 2345
+    stock_name: '智邦'
+    keywords:
+      - '網通'
+      - '設備'
+
+  - symbol: 3711
+    stock_name: '日月光'
+    keywords:
+      - '封測'
+      - '半導體'
+
+  - symbol: 2308
+    stock_name: '台達電'
+    keywords:
+      - '電源'
+      - '節能'
+      - '電子'
+
+  - symbol: 2301
+    stock_name: '光寶科'
+    keywords:
+      - '電子'
+      - 'LED'
+      - '電源'
+
+  - symbol: 2385
+    stock_name: '群光'
+    keywords:
+      - '電子'
+      - '電源'
+      - '周邊'
+
+  - symbol: 3017
+    stock_name: '奇鋐'
+    keywords:
+      - '散熱'
+      - '電子'
+
+  - symbol: 2368
+    stock_name: '金像電'
+    keywords:
+      - 'PCB'
+      - '電子'
+
+  - symbol: 3533
+    stock_name: '嘉澤'
+    keywords:
+      - '連接器'
+      - '電子'
+
+  - symbol: 2376
+    stock_name: '技嘉'
+    keywords:
+      - '電子'
+      - '主機板'
+      - '顯示卡'
+
+  - symbol: 6669
+    stock_name: '緯穎'
+    keywords:
+      - '伺服器'
+      - '雲端'
+      - '科技'
+
+  - symbol: 2356
+    stock_name: '英業達'
+    keywords:
+      - '代工'
+      - '電子'
+
+  - symbol: 2317
+    stock_name: '鴻海'
+    keywords:
+      - '代工'
+      - '電子'
+      - '科技'
+
+  - symbol: 2454
+    stock_name: '聯發科'
+    keywords:
+      - '半導體'
+      - 'IC設計'
+      - '手機晶片'
+
+  - symbol: 6213
+    stock_name: '聯茂'
+    keywords:
+      - 'PCB'
+      - '電子'
