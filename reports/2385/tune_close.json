@@ -1,0 +1,14 @@
+{
+    "yearly_seasonality": [
+        false
+    ],
+    "weekly_seasonality": [
+        true
+    ],
+    "n_lags": [
+        2
+    ],
+    "use_holidays": [
+        true
+    ]
+}

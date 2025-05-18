@@ -175,5 +175,3 @@ cython_debug/
 
 chroma/
 lightning_logs/
-reports/*
-!reports/.gitkeep

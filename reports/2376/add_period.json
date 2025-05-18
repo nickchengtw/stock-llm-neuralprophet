@@ -1,0 +1,8 @@
+{
+    "yearly_seasonality": [
+        true
+    ],
+    "weekly_seasonality": [
+        true
+    ]
+}

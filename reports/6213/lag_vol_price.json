@@ -1,0 +1,23 @@
+{
+    "yearly_seasonality": [
+        false
+    ],
+    "weekly_seasonality": [
+        false
+    ],
+    "n_lags": [
+        1
+    ],
+    "use_holidays": [
+        false
+    ],
+    "volume": [
+        5
+    ],
+    "high_low_diff": [
+        5
+    ],
+    "MA": [
+        0
+    ]
+}
