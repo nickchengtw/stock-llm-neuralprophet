@@ -10,6 +10,7 @@ from src.rag.embedding import get_embedding_function
 from src.rag.api import get_model, LLMProvider, get_reponse
 from src.rag.prompt import get_prompt
 from src.rag.utils import generate_date_range
+from src.config import START_DATE, END_DATE, MODEL_NAME, RAG_STOCKS, STOCKS
 
 CHROMA_PATH = "chroma"
 
@@ -17,31 +18,9 @@ QUERY_TEMPLATE = "請對所有與{}相關的新聞進行詳細分析，並判斷
 
 db = Chroma(persist_directory=CHROMA_PATH, embedding_function=get_embedding_function())
 
-def load_stocks():
-    with open("stocks.yml", "r", encoding="utf-8") as f:
-        data = yaml.safe_load(f)
-
-    stock_dict = {
-        str(stock['symbol']): {
-            'stock_name': stock['stock_name'],
-            'keywords': stock['keywords']
-        }
-        for stock in data['stocks']
-    }
-    return stock_dict
-
 
 def main():
-    # Load YAML config
-    with open("config.yaml", "r", encoding="utf-8") as f:
-        config = yaml.safe_load(f)
-    START_DATE = config["start_date"]
-    END_DATE = config["end_date"]
-    MODEL_NAME = config["model_name"]
-    
-    STOCKS = load_stocks()
-
-    for symbol in config['stocks']:
+    for symbol in RAG_STOCKS:
         data = STOCKS[str(symbol)]
         company = data['stock_name']
         keywords = [str(symbol), data['stock_name']]
