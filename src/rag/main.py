@@ -1,6 +1,7 @@
 from datetime import date, datetime
 import os
 import csv
+import re
 
 import yaml
 from retry import retry
@@ -32,7 +33,7 @@ def generate_factor(company, start_date, end_date, model_name, keywords):
     for news_date in generate_date_range(start_date, end_date):
         results = query_db(news_date, company, keywords)
         if len(results):
-            print(f'Find {len(results)} relevant result')
+            print(f'Find {len(results)} relevant result as {news_date}')
             factor, explanation = query_rag(company, results, model_name)
             print(factor, explanation)
             print("Saving result")
@@ -42,9 +43,11 @@ def generate_factor(company, start_date, end_date, model_name, keywords):
 
 
 def parse_response(response: str) -> tuple:
-    cleaned_text = response.strip()
+    # Remove <think>...</think>
+    cleaned_text = re.sub(r"<think>.*?</think>", "", response, flags=re.DOTALL).strip()
     fluc_factor, explain = cleaned_text.split("\n", maxsplit=1)
     return float(fluc_factor), explain
+
 
 def filter_results(results, k, keywords):
     def custom_filter(content, metadata, score):
@@ -67,7 +70,6 @@ def query_db(news_date, company, keywords):
     return results
 
 
-@retry(exceptions=ValueError, tries=10, delay=3)
 def query_rag(company: str, results, model_name):
     prompt = get_prompt(company, results)
     print(prompt)
@@ -77,8 +79,7 @@ def query_rag(company: str, results, model_name):
     response_text = get_reponse(LLMProvider.OLLAMA, model.invoke(prompt))
 
     sources = [doc.metadata.get("id", None) for doc, _score in results]
-    formatted_response = f"Response: {response_text}\nSources: {sources}"
-    print(formatted_response)
+    print(f"Sources: {sources}\nResponse: {response_text}")
     return parse_response(response_text)
 
 
