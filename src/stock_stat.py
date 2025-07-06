@@ -31,5 +31,7 @@ avg_change_df = pd.DataFrame(avg_changes)
 # Format percentage column for display (optional)
 avg_change_df['avg_price_change_pct'] = avg_change_df['avg_price_change'].apply(lambda x: f"{x:.2%}")
 
+avg_change_df.sort_values(by='symbol', inplace=True)
+
 # Print or save
 print(avg_change_df)

@@ -1,9 +1,9 @@
 ollama_base_url: http://localhost:11500
 start_date: 2022-11-01
 end_date: 2025-03-17
-model_name: qwen3:8b
+model_name: cwchang/llama-3-taiwan-8b-instruct
 stocks:
-  - 2382
+  # - 2382
   # - 3231
   # - 2330
   # - 3443
