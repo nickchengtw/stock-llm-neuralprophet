@@ -7,6 +7,7 @@ with open("config.yaml", "r", encoding="utf-8") as f:
 with open("stocks.yml", "r", encoding="utf-8") as f:
     data = yaml.safe_load(f)
 
+OLLAMA_BASE_URL = config["ollama_base_url"]
 START_DATE = config["start_date"]
 END_DATE = config["end_date"]
 MODEL_NAME = config["model_name"]

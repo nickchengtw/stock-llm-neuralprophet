@@ -2,9 +2,10 @@ import os
 from enum import Enum
 
 from dotenv import load_dotenv
-
 from langchain_openai import ChatOpenAI
 from langchain_ollama import OllamaLLM
+
+from src.config import OLLAMA_BASE_URL
 
 # Load variables from .env file
 load_dotenv()
@@ -20,7 +21,7 @@ def get_model(provider: LLMProvider, model_name: str, seed: int = 42, temperatur
     """Function to get the appropriate LLM based on the provider."""
 
     if provider == LLMProvider.OLLAMA:
-        return OllamaLLM(model=model_name, seed=seed, temperature=temperature)
+        return OllamaLLM(base_url=OLLAMA_BASE_URL, model=model_name, seed=seed, temperature=temperature)
     elif provider == LLMProvider.OPENAI:
         # Initialize OpenAI LLM with the API key from config
         return ChatOpenAI(
