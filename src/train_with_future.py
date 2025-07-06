@@ -121,7 +121,7 @@ def train_with_future(symbol, name, stock_data_path):
     results_df = pd.DataFrame(results)
     results_df = results_df.sort_values(by="MAPE")
     print(results_df.head())
-    results_df.to_csv(f'reports/final_{symbol}.csv')
+    results_df.to_csv(f'reports/{symbol}/final_{symbol}.csv')
 
 
 def main():
