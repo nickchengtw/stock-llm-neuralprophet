@@ -3,15 +3,14 @@ import os
 import csv
 import re
 
-import yaml
-from retry import retry
+import httpx
 from langchain.vectorstores import Chroma
 
 from src.rag.embedding import get_embedding_function
 from src.rag.api import get_model, LLMProvider, get_reponse
 from src.rag.prompt import get_prompt
 from src.rag.utils import generate_date_range
-from src.config import START_DATE, END_DATE, MODEL_NAME, RAG_STOCKS, STOCKS
+from src.config import START_DATE, END_DATE, MODEL_NAME, RAG_STOCKS, STOCKS, MAX_NEWS_USED
 
 CHROMA_PATH = "chroma"
 
@@ -31,13 +30,17 @@ def main():
 def generate_factor(company, start_date, end_date, model_name, keywords):
     print(f"Generating factor for {company} from {start_date} to {end_date}")
     for news_date in generate_date_range(start_date, end_date):
+        print(f"Querying news for {news_date}")
         results = query_db(news_date, company, keywords)
         if len(results):
             print(f'Find {len(results)} relevant result as {news_date}')
-            factor, explanation = query_rag(company, results, model_name)
-            print(factor, explanation)
-            print("Saving result")
-            append_row_to_csv(f'./data/factors/result_{company}.csv', news_date, factor, explanation, len(results)) # TODO : use config
+            try:
+                factor, explanation = query_rag(company, results, model_name)
+                print(factor, explanation)
+                print("Saving result")
+                append_row_to_csv(f'./data/factors/result_{company}.csv', news_date, factor, explanation, len(results)) # TODO : use config
+            except httpx.ReadTimeout as e:
+                print(f"LLM timeout at {news_date} for {company}: {e}")
         else:
             print(f"No relevant news found in the DB at {str(news_date)}.")
 
@@ -66,7 +69,7 @@ def query_db(news_date, company, keywords):
     metadata_filter = {"publish_at": news_date.strftime("%Y-%m-%d")}
     query_text = QUERY_TEMPLATE.format(company)
     results = db.similarity_search_with_score(query_text, filter=metadata_filter)
-    results = filter_results(results, 5, keywords)
+    results = filter_results(results, MAX_NEWS_USED, keywords)
     return results
 
 

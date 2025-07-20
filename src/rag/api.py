@@ -1,6 +1,7 @@
 import os
 from enum import Enum
 
+import httpx
 from dotenv import load_dotenv
 from langchain_openai import ChatOpenAI
 from langchain_ollama import OllamaLLM
@@ -17,11 +18,11 @@ class LLMProvider(Enum):
     HUGGINGFACE = "huggingface"
 
 
-def get_model(provider: LLMProvider, model_name: str, seed: int = 42, temperature: float = 0.0):
+def get_model(provider: LLMProvider, model_name: str, seed: int = 42, temperature: float = 0.0, timeout: float = 10.0):
     """Function to get the appropriate LLM based on the provider."""
 
     if provider == LLMProvider.OLLAMA:
-        return OllamaLLM(base_url=OLLAMA_BASE_URL, model=model_name, seed=seed, temperature=temperature)
+        return OllamaLLM(base_url=OLLAMA_BASE_URL, model=model_name, seed=seed, temperature=temperature, client_kwargs={"timeout": httpx.Timeout(timeout)})
     elif provider == LLMProvider.OPENAI:
         # Initialize OpenAI LLM with the API key from config
         return ChatOpenAI(

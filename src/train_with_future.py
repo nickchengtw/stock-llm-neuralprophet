@@ -135,7 +135,7 @@ def main():
     # Print the result
     for symbol, name in stock_list:
         print('Training with future regressor', symbol, name)
-        train_with_future(symbol, name, f'data/stocks/{symbol}_stock_data_0317.csv')
+        train_with_future(symbol, name, f'data/stocks/{symbol}_stock_data_0630.csv')
 
     # symbol = '2330'
     # name = '台積電'

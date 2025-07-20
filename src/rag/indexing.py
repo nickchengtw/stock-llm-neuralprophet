@@ -29,8 +29,8 @@ def main():
         print("✨ Clearing Database")
         clear_database()
 
-    start_date = date(2022, 11, 1)
-    end_date = date(2025, 3, 17)
+    start_date = date(2025, 3, 18)
+    end_date = date(2025, 6, 30)
     for news_date in generate_date_range(start_date, end_date):
         filename = f'data/news/news_{news_date}.csv' # TODO : use config
         if not os.path.exists(filename):

@@ -11,6 +11,7 @@ OLLAMA_BASE_URL = config["ollama_base_url"]
 START_DATE = config["start_date"]
 END_DATE = config["end_date"]
 MODEL_NAME = config["model_name"]
+MAX_NEWS_USED = config["max_news_used"]
 RAG_STOCKS = config["stocks"]
 
 STOCKS = {
