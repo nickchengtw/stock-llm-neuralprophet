@@ -1,33 +1,33 @@
 {
     "yearly_seasonality": [
-        false
-    ],
-    "weekly_seasonality": [
         true
     ],
-    "n_lags": [
-        8
-    ],
-    "use_holidays": [
+    "weekly_seasonality": [
         false
     ],
+    "n_lags": [
+        1
+    ],
+    "use_holidays": [
+        true
+    ],
     "volume": [
-        0
+        10
     ],
     "high_low_diff": [
-        0
+        5
     ],
     "MA": [
         0
     ],
     "foreign": [
-        3
+        1
     ],
     "investment": [
         1
     ],
     "dealer": [
-        1
+        3
     ],
     "ratio_over_400_shares": [
         0
@@ -39,7 +39,7 @@
         5
     ],
     "shareholders_800_to_1000": [
-        5
+        0
     ],
     "ratio_over_1000_shares": [
         0

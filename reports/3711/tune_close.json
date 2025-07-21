@@ -1,12 +1,12 @@
 {
     "yearly_seasonality": [
-        false
+        true
     ],
     "weekly_seasonality": [
         false
     ],
     "n_lags": [
-        1
+        2
     ],
     "use_holidays": [
         false

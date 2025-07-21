@@ -6,10 +6,10 @@
         false
     ],
     "n_lags": [
-        1
+        7
     ],
     "use_holidays": [
-        false
+        true
     ],
     "volume": [
         0
@@ -18,10 +18,10 @@
         0
     ],
     "MA": [
-        0
+        5
     ],
     "foreign": [
-        5
+        1
     ],
     "investment": [
         1
@@ -39,9 +39,9 @@
         0
     ],
     "shareholders_800_to_1000": [
-        5
+        0
     ],
     "ratio_over_1000_shares": [
-        5
+        0
     ]
 }

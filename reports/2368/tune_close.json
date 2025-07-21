@@ -6,9 +6,9 @@
         true
     ],
     "n_lags": [
-        5
+        1
     ],
     "use_holidays": [
-        false
+        true
     ]
 }

@@ -1,21 +1,21 @@
 {
     "yearly_seasonality": [
-        false
+        true
     ],
     "weekly_seasonality": [
-        false
+        true
     ],
     "n_lags": [
-        7
+        1
     ],
     "use_holidays": [
-        true
+        false
     ],
     "volume": [
         0
     ],
     "high_low_diff": [
-        5
+        0
     ],
     "MA": [
         0
@@ -30,10 +30,10 @@
         5
     ],
     "ratio_over_400_shares": [
-        0
+        5
     ],
     "shareholders_400_to_600": [
-        0
+        5
     ],
     "shareholders_600_to_800": [
         5
@@ -42,6 +42,6 @@
         5
     ],
     "ratio_over_1000_shares": [
-        5
+        0
     ]
 }

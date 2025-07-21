@@ -1,32 +1,32 @@
 {
     "yearly_seasonality": [
-        true
+        false
     ],
     "weekly_seasonality": [
-        false
+        true
     ],
     "n_lags": [
-        2
+        3
     ],
     "use_holidays": [
-        false
+        true
     ],
     "volume": [
-        0
+        10
     ],
     "high_low_diff": [
         0
     ],
     "MA": [
-        0
+        5
     ],
     "foreign": [
         1
     ],
     "investment": [
-        1
+        5
     ],
     "dealer": [
-        1
+        5
     ]
 }

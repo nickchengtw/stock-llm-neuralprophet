@@ -1,18 +1,18 @@
 {
     "yearly_seasonality": [
-        false
+        true
     ],
     "weekly_seasonality": [
         false
     ],
     "n_lags": [
-        1
+        2
     ],
     "use_holidays": [
         false
     ],
     "volume": [
-        0
+        10
     ],
     "high_low_diff": [
         0
@@ -27,6 +27,6 @@
         1
     ],
     "dealer": [
-        1
+        5
     ]
 }

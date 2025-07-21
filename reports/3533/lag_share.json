@@ -12,13 +12,13 @@
         true
     ],
     "volume": [
-        0
+        5
     ],
     "high_low_diff": [
-        0
+        10
     ],
     "MA": [
-        0
+        10
     ],
     "foreign": [
         1
@@ -27,7 +27,7 @@
         1
     ],
     "dealer": [
-        5
+        1
     ],
     "ratio_over_400_shares": [
         0

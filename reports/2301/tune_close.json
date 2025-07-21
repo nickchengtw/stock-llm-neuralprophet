@@ -3,10 +3,10 @@
         false
     ],
     "weekly_seasonality": [
-        true
+        false
     ],
     "n_lags": [
-        9
+        1
     ],
     "use_holidays": [
         false

@@ -6,7 +6,7 @@
         true
     ],
     "n_lags": [
-        4
+        1
     ],
     "use_holidays": [
         true
@@ -15,9 +15,9 @@
         10
     ],
     "high_low_diff": [
-        10
+        5
     ],
     "MA": [
-        10
+        0
     ]
 }

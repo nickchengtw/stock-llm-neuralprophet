@@ -12,12 +12,12 @@
         true
     ],
     "volume": [
-        0
+        5
     ],
     "high_low_diff": [
-        0
+        10
     ],
     "MA": [
-        0
+        10
     ]
 }

@@ -3,21 +3,21 @@
         false
     ],
     "weekly_seasonality": [
-        false
+        true
     ],
     "n_lags": [
-        1
+        12
     ],
     "use_holidays": [
         false
     ],
     "volume": [
-        5
+        0
     ],
     "high_low_diff": [
-        5
+        0
     ],
     "MA": [
-        0
+        10
     ]
 }

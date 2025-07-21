@@ -6,7 +6,7 @@
         true
     ],
     "n_lags": [
-        4
+        1
     ],
     "use_holidays": [
         true
@@ -15,31 +15,31 @@
         10
     ],
     "high_low_diff": [
-        10
+        5
     ],
     "MA": [
-        10
+        0
     ],
     "foreign": [
         1
     ],
     "investment": [
-        1
+        5
     ],
     "dealer": [
         1
     ],
     "ratio_over_400_shares": [
-        0
+        5
     ],
     "shareholders_400_to_600": [
         0
     ],
     "shareholders_600_to_800": [
-        0
+        5
     ],
     "shareholders_800_to_1000": [
-        0
+        5
     ],
     "ratio_over_1000_shares": [
         0
