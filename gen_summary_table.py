@@ -42,3 +42,4 @@ for symbol, _ in dfs:
 summary_df = pd.DataFrame(summary_table, index=table_index).T
 summary_df['is_lower'] = summary_df['with_future'] < summary_df['lag_share']
 print(summary_df)
+summary_df.to_csv("reports/summary.csv")

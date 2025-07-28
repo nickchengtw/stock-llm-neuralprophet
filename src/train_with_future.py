@@ -137,9 +137,6 @@ def main():
         print('Training with future regressor', symbol, name)
         train_with_future(symbol, name, f'data/stocks/{symbol}_stock_data_0630.csv')
 
-    # symbol = '2330'
-    # name = '台積電'
-    # train_with_future(symbol, name, f'data/stocks/{symbol}_stock_data_0317.csv')
 
 if __name__ == "__main__":
     main()

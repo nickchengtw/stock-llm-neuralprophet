@@ -173,7 +173,7 @@ TUNE_STEPS = {
     },
 }
 
-def train_flow(stock_data_path):
+def train_flow(symbol, stock_data_path):
     print("Loading data...")
     df = pd.read_csv(stock_data_path, parse_dates=True)
     df = add_stock_price_feature(df)
@@ -188,12 +188,13 @@ def train_flow(stock_data_path):
         results_df = pd.DataFrame(results)
         results_df = results_df.sort_values(by="MAPE")
         print(results_df.head())
-        results_df.to_csv(f'reports/{step_name}.csv')
+        results_df.to_csv(f'reports/{symbol}/{step_name}.csv')
         
         best_candidates = results_df.sort_values(by="MAPE")[step['candidate_cols']].head(step['top_n']).to_dict(orient="list")
         print('best_candidates:', best_candidates)
         optimal_params = best_candidates
-        with open(f"reports/{step_name}.json", "w") as json_file:
+        
+        with open(f"reports/{symbol}/{step_name}.json", "w") as json_file:
             json.dump(optimal_params, json_file, indent=4)
 
 def main():
@@ -205,7 +206,11 @@ def main():
     args = parser.parse_args()
     file_path = args.filepath
 
-    train_flow(file_path)
+    from src.config import STOCKS
+    for symbol in STOCKS.keys():
+        print(f"Training flow for {symbol}")
+        os.mkdir(f'reports/{symbol}')
+        train_flow(symbol, f'data/stocks/{symbol}_stock_data_0630.csv')
 
 if __name__ == "__main__":
     main()
