@@ -27,6 +27,8 @@ from src.model.features import add_stock_price_feature
 
 set_log_level("ERROR")
 
+NEUTRAL_FACTOR_VALUE = 0.5  # Default value for the factor when no news is available
+
 VALIDATION_PERCENTAGE = 0.2
 LAG_REGRESSORS = [
     'volume',
@@ -94,22 +96,20 @@ def train_with_future(symbol, name, stock_data_path):
     print("Loading data...")
     df = pd.read_csv(stock_data_path, parse_dates=['ds'])
     df = add_stock_price_feature(df)
-    df.info()
     
     print("Loading factors")
     llm_factor = pd.read_csv(f'data/factors/result_{name}.csv', parse_dates=True, index_col=0)
-    llm_factor.info()
     
     llm_factor = llm_factor[~llm_factor.index.duplicated(keep='first')]
     llm_factor = llm_factor[['factor']]
-    llm_factor.info()
     
     df_merged = df.merge(llm_factor, how='left', left_on='ds', right_index=True)
     # df_merged[df_merged['factor'].isnull()]
-    
-    df_merged['factor'] = df_merged['factor'].fillna(0)
+
+    df_merged['factor'] = df_merged['factor'].fillna(NEUTRAL_FACTOR_VALUE)
+    print(f"Original factors stat:\n{df_merged.describe()['factor']}")
+    df_merged['factor'] = df_merged['factor'].clip(lower=0, upper=1)
     df_merged.dropna(inplace=True)
-    df_merged.info()
     
     # Open and load JSON file
     with open(f'reports/{symbol}/lag_share.json', 'r', encoding='utf-8') as file:
