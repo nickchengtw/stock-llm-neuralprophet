@@ -1,2 +1,2 @@
 ,MA,dealer,factor,foreign,high_low_diff,investment,n_lags,ratio_over_1000_shares,ratio_over_400_shares,shareholders_400_to_600,shareholders_600_to_800,shareholders_800_to_1000,use_holidays,volume,weekly_seasonality,yearly_seasonality,RMSE,MAPE
-0,0,5,True,3,0,1,1,0,5,5,5,5,False,0,True,True,5.7853217124938965,1.7863922947662296
+0,0,5,True,3,0,1,1,0,5,5,5,5,False,0,True,True,5.556662559509277,1.6851757352099186

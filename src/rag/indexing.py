@@ -15,12 +15,36 @@ from src.rag.utils import generate_date_range
 
 CHROMA_PATH = "chroma"
 DATA_PATH = "data"
-# Load the existing database.
-db = Chroma(
-    persist_directory=CHROMA_PATH, embedding_function=get_embedding_function()
-)
+
+# def main():
+#     # Check if the database should be cleared (using the --clear flag).
+#     parser = argparse.ArgumentParser()
+#     parser.add_argument("--reset", action="store_true", help="Reset the database.")
+#     args = parser.parse_args()
+#     if args.reset:
+#         print("✨ Clearing Database")
+#         clear_database()
+
+#     start_date = date(2025, 3, 18)
+#     end_date = date(2025, 6, 30)
+#     for news_date in generate_date_range(start_date, end_date):
+#         filename = f'data/news/news_{news_date}.csv' # TODO : use config
+#         if not os.path.exists(filename):
+#             print(f'No news data found for {news_date}')
+#             continue
+#         df = pd.read_csv(filename)
+#         print(f'{len(df)} news loaded from {filename}')
+#         documents = DataFrameLoader(df, page_content_column="content")
+#         chunks = split_documents(documents.load())
+#         print(f'{len(chunks)} chunks to insert')
+#         add_to_chroma(chunks)
 
 def main():
+    # Load the existing database.
+    db = Chroma(
+        persist_directory=CHROMA_PATH, embedding_function=get_embedding_function()
+    )
+    
     # Check if the database should be cleared (using the --clear flag).
     parser = argparse.ArgumentParser()
     parser.add_argument("--reset", action="store_true", help="Reset the database.")
@@ -29,19 +53,17 @@ def main():
         print("✨ Clearing Database")
         clear_database()
 
-    start_date = date(2025, 3, 18)
-    end_date = date(2025, 6, 30)
-    for news_date in generate_date_range(start_date, end_date):
-        filename = f'data/news/news_{news_date}.csv' # TODO : use config
-        if not os.path.exists(filename):
-            print(f'No news data found for {news_date}')
-            continue
-        df = pd.read_csv(filename)
-        print(f'{len(df)} news loaded from {filename}')
-        documents = DataFrameLoader(df, page_content_column="content")
-        chunks = split_documents(documents.load())
-        print(f'{len(chunks)} chunks to insert')
-        add_to_chroma(chunks)
+
+    filename = 'rules.csv' # TODO : use config
+    if not os.path.exists(filename):
+        print(f'No news data found for')
+    df = pd.read_csv(filename)
+    print(f'{len(df)} news loaded from {filename}')
+    documents = DataFrameLoader(df, page_content_column="content")
+    chunks = split_documents(documents.load())
+    print(f'{len(chunks)} chunks to insert')
+    add_to_chroma(db, chunks)
+    print('✨ Finished indexing documents')
 
 
 def split_documents(documents: list[Document]):
@@ -60,7 +82,7 @@ def extend_chunk_id(chunks: Document):
         new_chunks.append(chunk)
     return new_chunks
 
-def add_to_chroma(chunks: list[Document]):
+def add_to_chroma(db, chunks: list[Document]):
     # Add or Update the documents.
     existing_items = db.get(include=[])  # IDs are always included by default
     existing_ids = set(existing_items["ids"])
@@ -83,7 +105,7 @@ def add_to_chroma(chunks: list[Document]):
 
 
 def get_metadata(chunk):
-    return {"publish_at": datetime.strptime(chunk.metadata["publish_at"], '%Y-%m-%d %H:%M:%S').strftime('%Y-%m-%d')}
+    return {"publish_at": datetime.strptime(chunk.metadata["publish_at"], '%Y-%m-%d').strftime('%Y-%m-%d')}
 
 def clear_database():
     if os.path.exists(CHROMA_PATH):
