@@ -8,7 +8,7 @@ avg_changes = []
 for symbol, data in STOCKS.items():
     company = data['stock_name']
 
-    df = pd.read_csv(f'data/stocks/{symbol}_stock_data_0317.csv', parse_dates=['ds'])
+    df = pd.read_csv(f'data/stocks/{symbol}_stock_data_0630.csv', parse_dates=['ds'])
     plt = df.plot(x="ds", y="y", figsize=(15, 5))
     # df.info()
 
@@ -33,5 +33,5 @@ avg_change_df['avg_price_change_pct'] = avg_change_df['avg_price_change'].apply(
 
 avg_change_df.sort_values(by='symbol', inplace=True)
 
-# Print or save
+avg_change_df.to_csv('reports/stock_stats.csv', index=False)
 print(avg_change_df)
