@@ -1,13 +1,13 @@
 ollama_base_url: http://localhost:11500
-start_date: 2022-11-02
+start_date: 2022-11-01
 end_date: 2025-06-30
 model_name: cwchang/llama-3-taiwan-8b-instruct
 max_news_used: 5
 stocks:
-  # - 2382
-  # - 3231
-  # - 2330
-  # - 3443
+  - 2382
+  - 3231
+  - 2330
+  - 3443
   - 3661
   - 3035
   - 2345

@@ -18,6 +18,7 @@ STOCKS = {
     str(stock["symbol"]): {
         "stock_name": stock["stock_name"],
         "keywords": stock["keywords"],
+        "avg_change": stock["avg_change"],
     }
     for stock in data["stocks"]
 }
