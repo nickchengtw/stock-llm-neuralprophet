@@ -1,8 +1,13 @@
 ollama_base_url: http://localhost:11500
 start_date: 2022-11-01
 end_date: 2025-06-30
+provider: ollama
 model_name: cwchang/llama-3-taiwan-8b-instruct
+
 max_news_used: 5
+max_char_length: 7500
+rag_ref_used: 15
+
 stocks:
   - 2382
   - 3231

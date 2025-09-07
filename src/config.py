@@ -10,9 +10,12 @@ with open("stocks.yml", "r", encoding="utf-8") as f:
 OLLAMA_BASE_URL = config["ollama_base_url"]
 START_DATE = config["start_date"]
 END_DATE = config["end_date"]
+PROVIDER = config["provider"]
 MODEL_NAME = config["model_name"]
 MAX_NEWS_USED = config["max_news_used"]
 RAG_STOCKS = config["stocks"]
+MAX_CHAR_LENGTH = config["max_char_length"]
+RAG_REF_USED = config["rag_ref_used"]
 
 STOCKS = {
     str(stock["symbol"]): {
@@ -22,3 +25,5 @@ STOCKS = {
     }
     for stock in data["stocks"]
 }
+
+CHROMA_PATH = "chroma"

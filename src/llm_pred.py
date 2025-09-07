@@ -10,22 +10,14 @@ from langchain.prompts import ChatPromptTemplate
 import yaml
 
 from src.rag.embedding import get_embedding_function
-from src.rag.api import get_model, LLMProvider, get_reponse
-# from src.rag.prompt import get_prompt
-from src.rag.utils import generate_date_range
-from src.config import START_DATE, END_DATE, MODEL_NAME, RAG_STOCKS, STOCKS, MAX_NEWS_USED
-
-CHROMA_PATH = "chroma"
-
-MAX_CHAR_LENGTH = 7500
-RAG_REF_USED = 15
+from src.rag.api import get_model, get_reponse, LLMProvider
+from src.config import START_DATE, END_DATE, MODEL_NAME, RAG_STOCKS, STOCKS, MAX_NEWS_USED, MAX_CHAR_LENGTH, RAG_REF_USED, CHROMA_PATH, PROVIDER
 
 
 db = Chroma(persist_directory=CHROMA_PATH, embedding_function=get_embedding_function())
 
 
 async def main():
-    # for symbol in [2330]:
     for symbol in RAG_STOCKS:
         data = STOCKS[str(symbol)]
         company = data['stock_name']
@@ -155,12 +147,12 @@ async def query_rag(company, change_percent, volume_change, foreign_change, avg_
     print(prompt)
 
     print("Generating response text")
-    model = get_model(LLMProvider.OLLAMA, model_name)
+    model = get_model(LLMProvider(PROVIDER), model_name)
     result = await asyncio.wait_for(
         model.ainvoke(prompt),
         timeout=15  # seconds
     )
-    response_text = get_reponse(LLMProvider.OLLAMA, result)
+    response_text = get_reponse(LLMProvider(PROVIDER), result)
 
     # sources = [doc.metadata.get("id", None) for doc, _score in results]
     print(f"Response: {response_text}")

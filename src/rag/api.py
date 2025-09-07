@@ -42,5 +42,5 @@ def get_reponse(provider: LLMProvider, resp: str):
         return resp
     elif provider == LLMProvider.OPENAI:
         # Initialize OpenAI LLM with the API key from config
-        return resp.content[7:-1]
+        return resp.content
     raise ValueError(f"Unsupported provider: {provider}")

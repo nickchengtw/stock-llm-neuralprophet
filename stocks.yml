@@ -23,130 +23,130 @@ stocks:
       - '半導體'
       - '晶片'
 
-  # - symbol: 3443
-  #   stock_name: '創意'
-  #   avg_change: 2.67
-  #   keywords:
-  #     - '半導體'
-  #     - '設計'
-  #     - 'IC'
+  - symbol: 3443
+    stock_name: '創意'
+    avg_change: 2.67
+    keywords:
+      - '半導體'
+      - '設計'
+      - 'IC'
 
-  # - symbol: 3661
-  #   stock_name: '世芯'
-  #   avg_change: 2.83
-  #   keywords:
-  #     - '半導體'
-  #     - 'ASIC'
-  #     - '設計'
+  - symbol: 3661
+    stock_name: '世芯'
+    avg_change: 2.83
+    keywords:
+      - '半導體'
+      - 'ASIC'
+      - '設計'
 
-  # - symbol: 3035
-  #   stock_name: '智原'
-  #   avg_change: 2.40
-  #   keywords:
-  #     - 'IC設計'
-  #     - '半導體'
+  - symbol: 3035
+    stock_name: '智原'
+    avg_change: 2.40
+    keywords:
+      - 'IC設計'
+      - '半導體'
 
-  # - symbol: 2345
-  #   stock_name: '智邦'
-  #   avg_change: 2.15
-  #   keywords:
-  #     - '網通'
-  #     - '設備'
+  - symbol: 2345
+    stock_name: '智邦'
+    avg_change: 2.15
+    keywords:
+      - '網通'
+      - '設備'
 
-  # - symbol: 3711
-  #   stock_name: '日月光'
-  #   avg_change: 1.63
-  #   keywords:
-  #     - '封測'
-  #     - '半導體'
+  - symbol: 3711
+    stock_name: '日月光'
+    avg_change: 1.63
+    keywords:
+      - '封測'
+      - '半導體'
 
-  # - symbol: 2308
-  #   stock_name: '台達電'
-  #   avg_change: 1.48
-  #   keywords:
-  #     - '電源'
-  #     - '節能'
-  #     - '電子'
+  - symbol: 2308
+    stock_name: '台達電'
+    avg_change: 1.48
+    keywords:
+      - '電源'
+      - '節能'
+      - '電子'
 
-  # - symbol: 2301
-  #   stock_name: '光寶科'
-  #   avg_change: 1.62
-  #   keywords:
-  #     - '電子'
-  #     - 'LED'
-  #     - '電源'
+  - symbol: 2301
+    stock_name: '光寶科'
+    avg_change: 1.62
+    keywords:
+      - '電子'
+      - 'LED'
+      - '電源'
 
-  # - symbol: 2385
-  #   stock_name: '群光'
-  #   avg_change: 1.40
-  #   keywords:
-  #     - '電子'
-  #     - '電源'
-  #     - '周邊'
+  - symbol: 2385
+    stock_name: '群光'
+    avg_change: 1.40
+    keywords:
+      - '電子'
+      - '電源'
+      - '周邊'
 
-  # - symbol: 3017
-  #   stock_name: '奇鋐'
-  #   avg_change: 2.66
-  #   keywords:
-  #     - '散熱'
-  #     - '電子'
+  - symbol: 3017
+    stock_name: '奇鋐'
+    avg_change: 2.66
+    keywords:
+      - '散熱'
+      - '電子'
 
-  # - symbol: 2368
-  #   stock_name: '金像電'
-  #   avg_change: 2.30
-  #   keywords:
-  #     - 'PCB'
-  #     - '電子'
+  - symbol: 2368
+    stock_name: '金像電'
+    avg_change: 2.30
+    keywords:
+      - 'PCB'
+      - '電子'
 
-  # - symbol: 3533
-  #   stock_name: '嘉澤'
-  #   avg_change: 2.05
-  #   keywords:
-  #     - '連接器'
-  #     - '電子'
+  - symbol: 3533
+    stock_name: '嘉澤'
+    avg_change: 2.05
+    keywords:
+      - '連接器'
+      - '電子'
 
-  # - symbol: 2376
-  #   stock_name: '技嘉'
-  #   avg_change: 2.13
-  #   keywords:
-  #     - '電子'
-  #     - '主機板'
-  #     - '顯示卡'
+  - symbol: 2376
+    stock_name: '技嘉'
+    avg_change: 2.13
+    keywords:
+      - '電子'
+      - '主機板'
+      - '顯示卡'
 
-  # - symbol: 6669
-  #   stock_name: '緯穎'
-  #   avg_change: 2.60
-  #   keywords:
-  #     - '伺服器'
-  #     - '雲端'
-  #     - '科技'
+  - symbol: 6669
+    stock_name: '緯穎'
+    avg_change: 2.60
+    keywords:
+      - '伺服器'
+      - '雲端'
+      - '科技'
 
-  # - symbol: 2356
-  #   stock_name: '英業達'
-  #   avg_change: 1.86
-  #   keywords:
-  #     - '代工'
-  #     - '電子'
+  - symbol: 2356
+    stock_name: '英業達'
+    avg_change: 1.86
+    keywords:
+      - '代工'
+      - '電子'
 
-  # - symbol: 2317
-  #   stock_name: '鴻海'
-  #   avg_change: 1.39
-  #   keywords:
-  #     - '代工'
-  #     - '電子'
-  #     - '科技'
+  - symbol: 2317
+    stock_name: '鴻海'
+    avg_change: 1.39
+    keywords:
+      - '代工'
+      - '電子'
+      - '科技'
 
-  # - symbol: 2454
-  #   stock_name: '聯發科'
-  #   avg_change: 1.73
-  #   keywords:
-  #     - '半導體'
-  #     - 'IC設計'
-  #     - '手機晶片'
+  - symbol: 2454
+    stock_name: '聯發科'
+    avg_change: 1.73
+    keywords:
+      - '半導體'
+      - 'IC設計'
+      - '手機晶片'
 
-  # - symbol: 6213
-  #   stock_name: '聯茂'
-  #   avg_change: 1.95
-  #   keywords:
-  #     - 'PCB'
-  #     - '電子'
+  - symbol: 6213
+    stock_name: '聯茂'
+    avg_change: 1.95
+    keywords:
+      - 'PCB'
+      - '電子'
