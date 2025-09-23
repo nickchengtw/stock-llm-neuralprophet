@@ -5,6 +5,7 @@ import httpx
 from dotenv import load_dotenv
 from langchain_openai import ChatOpenAI
 from langchain_ollama import OllamaLLM
+from langchain_google_genai import ChatGoogleGenerativeAI
 
 from src.config import OLLAMA_BASE_URL
 
@@ -16,6 +17,7 @@ class LLMProvider(Enum):
     OLLAMA = "ollama"
     OPENAI = "openai"
     HUGGINGFACE = "huggingface"
+    GEMINI = "gemini"
 
 
 def get_model(provider: LLMProvider, model_name: str, seed: int = 42, temperature: float = 0.0, timeout: float = 10.0):
@@ -32,6 +34,12 @@ def get_model(provider: LLMProvider, model_name: str, seed: int = 42, temperatur
             seed=seed,
             temperature=temperature,
         )
+    elif provider == LLMProvider.GEMINI:
+        return ChatGoogleGenerativeAI(
+            model=model_name,
+            google_api_key=os.getenv("GOOGLE_API_KEY"),
+            temperature=temperature,
+        )
     raise ValueError(f"Unsupported provider: {provider}")
 
 
@@ -43,4 +51,6 @@ def get_reponse(provider: LLMProvider, resp: str):
     elif provider == LLMProvider.OPENAI:
         # Initialize OpenAI LLM with the API key from config
         return resp.content
+    elif provider == LLMProvider.GEMINI:
+        print(resp)
     raise ValueError(f"Unsupported provider: {provider}")
