@@ -23,6 +23,7 @@ from neuralprophet import NeuralProphet, set_log_level, set_random_seed
 
 from src.model.utils import val_mape
 from src.model.features import add_stock_price_feature
+from src.config import STOCKS
 
 set_log_level("ERROR")
 
@@ -101,79 +102,61 @@ TUNE_STEPS = {
     },
     "add_ar": {
         "params": {
-            'n_lags': range(1, 16)
+            'n_lags': range(1, 8)
         },
-        "candidate_cols": ['n_lags'],
-        "top_n": 4
+        "candidate_cols": ['yearly_seasonality', 'weekly_seasonality', 'n_lags'],
+        "top_n": 1
     },
-    "tune_close": {
+    "add_holidays": {
         "params": {
-            'yearly_seasonality': [True, False],
-            'weekly_seasonality': [True, False],
-            'use_holidays': [True, False],
+            'use_holidays': [True],
         },
         "candidate_cols": ['yearly_seasonality', 'weekly_seasonality', 'n_lags', 'use_holidays'],
         "top_n": 1
     },
-    "lag_vol_price": {
+    "add_lag_vol_price": {
         "params": {
-            'volume': [0, 5, 10],
-            'high_low_diff': [0, 5, 10],
-            'MA': [0, 5, 10]
+            'volume': [0, 1],
+            'high_low_diff': [0, 1],
+            'MA': [0, 1]
         },
-        "candidate_cols": ['yearly_seasonality', 'weekly_seasonality', 'n_lags', 'use_holidays', 'volume', 'high_low_diff', 'MA'],
+        "candidate_cols": ['yearly_seasonality', 'weekly_seasonality', 'n_lags', 'use_holidays'],
         "top_n": 1
     },
-    "lag_inst": {
+    "add_lag_inst": {
         "params": {
-            'foreign': [1, 3, 5],
-            'investment': [1, 3, 5],
-            'dealer': [1, 3, 5]
+            'foreign': [0, 1],
+            'investment': [0, 1],
+            'dealer': [0, 1]
         },
         "candidate_cols": [
             'yearly_seasonality',
             'weekly_seasonality',
             'n_lags',
-            'use_holidays',
-            'volume',
-            'high_low_diff',
-            'MA',
-            'foreign',
-            'investment',
-            'dealer'
+            'use_holidays'
         ],
         "top_n": 1
     },
-    "lag_share": {
+    "add_lag_share": {
         "params": {
-            'ratio_over_400_shares': [0, 5],
-            'shareholders_400_to_600': [0, 5],
-            'shareholders_600_to_800': [0, 5],
-            'shareholders_800_to_1000': [0, 5],
-            'ratio_over_1000_shares': [0, 5],
+            'ratio_over_400_shares': [0, 1],
+            'shareholders_400_to_600': [0, 1],
+            'shareholders_600_to_800': [0, 1],
+            'shareholders_800_to_1000': [0, 1],
+            'ratio_over_1000_shares': [0, 1],
         },
         "candidate_cols": [
             'yearly_seasonality',
             'weekly_seasonality',
             'n_lags',
-            'use_holidays',
-            'volume',
-            'high_low_diff',
-            'MA',
-            'foreign',
-            'investment',
-            'dealer',
-            'ratio_over_400_shares',
-            'shareholders_400_to_600',
-            'shareholders_600_to_800',
-            'shareholders_800_to_1000',
-            'ratio_over_1000_shares',
+            'use_holidays'
         ],
         "top_n": 1
     },
 }
 
-def train_flow(symbol, stock_data_path):
+
+def train_flow(symbol, report_root_dir, stock_data_path):
     print("Loading data...")
     df = pd.read_csv(stock_data_path, parse_dates=True)
     df = add_stock_price_feature(df)
@@ -188,13 +171,13 @@ def train_flow(symbol, stock_data_path):
         results_df = pd.DataFrame(results)
         results_df = results_df.sort_values(by="MAPE")
         print(results_df.head())
-        results_df.to_csv(f'reports/{symbol}/{step_name}.csv')
+        results_df.to_csv(f'{report_root_dir}/{symbol}/{step_name}.csv')
         
         best_candidates = results_df.sort_values(by="MAPE")[step['candidate_cols']].head(step['top_n']).to_dict(orient="list")
         print('best_candidates:', best_candidates)
         optimal_params = best_candidates
         
-        with open(f"reports/{symbol}/{step_name}.json", "w") as json_file:
+        with open(f"{report_root_dir}/{symbol}/{step_name}.json", "w") as json_file:
             json.dump(optimal_params, json_file, indent=4)
 
 def main():
@@ -204,13 +187,12 @@ def main():
 
     # Parse arguments
     args = parser.parse_args()
-    file_path = args.filepath
+    REPORT_ROOT_DIR = args.filepath
 
-    from src.config import STOCKS
     for symbol in STOCKS.keys():
         print(f"Training flow for {symbol}")
-        os.mkdir(f'reports/{symbol}')
-        train_flow(symbol, f'data/stocks/{symbol}_stock_data_0630.csv')
+        os.mkdir(f'{REPORT_ROOT_DIR}/{symbol}')
+        train_flow(symbol, REPORT_ROOT_DIR, f'data/stocks/{symbol}_stock_data_0630.csv')
 
 if __name__ == "__main__":
     main()
