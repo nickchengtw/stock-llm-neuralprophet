@@ -42,6 +42,10 @@ LAG_REGRESSORS = [
     'ratio_over_1000_shares',
 ]
 
+with open("src/training_flow/standard.json", "r", encoding="utf-8") as file:
+    TUNE_STEPS = json.load(file)
+
+
 def train_and_eval(df, m):
     print(f"Data range: {df['ds'].iloc[0]} ~ {df['ds'].iloc[-1]}")
     df_train, df_val = m.split_df(df, valid_p=VALIDATION_PERCENTAGE)
@@ -85,75 +89,6 @@ def grid_search(df, param_grid):
         rmse, mape = train_and_eval(df[columns], m)
         results.append({**params, 'RMSE': rmse, 'MAPE': mape})
     return results
-
-TUNE_STEPS = {
-    "default": {
-        "params": {},
-        "candidate_cols": [],
-        "top_n": 0
-    },
-    "add_period": {
-        "params": {
-            "yearly_seasonality": [True],
-            "weekly_seasonality": [True],
-        },
-        "candidate_cols": ['yearly_seasonality', 'weekly_seasonality'],
-        "top_n": 1
-    },
-    "add_ar": {
-        "params": {
-            'n_lags': range(1, 8)
-        },
-        "candidate_cols": ['yearly_seasonality', 'weekly_seasonality', 'n_lags'],
-        "top_n": 1
-    },
-    "add_holidays": {
-        "params": {
-            'use_holidays': [True],
-        },
-        "candidate_cols": ['yearly_seasonality', 'weekly_seasonality', 'n_lags', 'use_holidays'],
-        "top_n": 1
-    },
-    "add_lag_vol_price": {
-        "params": {
-            'volume': [0, 1],
-            'high_low_diff': [0, 1],
-            'MA': [0, 1]
-        },
-        "candidate_cols": ['yearly_seasonality', 'weekly_seasonality', 'n_lags', 'use_holidays'],
-        "top_n": 1
-    },
-    "add_lag_inst": {
-        "params": {
-            'foreign': [0, 1],
-            'investment': [0, 1],
-            'dealer': [0, 1]
-        },
-        "candidate_cols": [
-            'yearly_seasonality',
-            'weekly_seasonality',
-            'n_lags',
-            'use_holidays'
-        ],
-        "top_n": 1
-    },
-    "add_lag_share": {
-        "params": {
-            'ratio_over_400_shares': [0, 1],
-            'shareholders_400_to_600': [0, 1],
-            'shareholders_600_to_800': [0, 1],
-            'shareholders_800_to_1000': [0, 1],
-            'ratio_over_1000_shares': [0, 1],
-        },
-        "candidate_cols": [
-            'yearly_seasonality',
-            'weekly_seasonality',
-            'n_lags',
-            'use_holidays'
-        ],
-        "top_n": 1
-    },
-}
 
 
 def train_flow(symbol, report_root_dir, stock_data_path):
