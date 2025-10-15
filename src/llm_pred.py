@@ -3,19 +3,21 @@ import os
 import csv
 import re
 import asyncio
+import time
 
 import pandas as pd
 from langchain_community.vectorstores import Chroma
 from langchain.prompts import ChatPromptTemplate
-import yaml
+from langchain.schema import Document
+from tenacity import retry, stop_after_attempt, wait_fixed
 
 from src.rag.embedding import get_embedding_function
 from src.rag.api import get_model, get_reponse, LLMProvider
-from src.config import START_DATE, END_DATE, MODEL_NAME, RAG_STOCKS, STOCKS, MAX_NEWS_USED, MAX_CHAR_LENGTH, RAG_REF_USED, CHROMA_PATH, PROVIDER
+from src.rag.retrieval import query_db, get_company_rules
+from src.config import START_DATE, END_DATE, MODEL_NAME, RAG_STOCKS, STOCKS, MAX_NEWS_USED, MAX_CHAR_LENGTH, CHROMA_PATH, PROVIDER, REPORT_ROOT, LLM_CALL_DELAY
 
 
 db = Chroma(persist_directory=CHROMA_PATH, embedding_function=get_embedding_function())
-
 
 async def main():
     for symbol in RAG_STOCKS:
@@ -48,7 +50,10 @@ async def generate_factor(company, symbol, avg_change, start_date, end_date, mod
         if len(news):
             print(f'Find {len(news)} relevant news at {news_date}')
             rules = query_db(news, company, keywords)
+            
+            # Add company specific rules
             company_rules = get_company_rules(company)
+            
             print(f'{len(rules)} rules found {rules}')
             print(f'{len(company_rules)} company rules found {company_rules}')
             try:
@@ -59,23 +64,26 @@ async def generate_factor(company, symbol, avg_change, start_date, end_date, mod
                     df.loc[datetime(news_date.year, news_date.month, news_date.day), "foreign"],
                     avg_change,
                     news, model_name, rules, company_rules)
+                
+                time.sleep(LLM_CALL_DELAY) # Avoid LLM rate limit
+                
                 explanation = "OK"
                 print(factor, explanation)
                 print("Saving result")
-                append_row_to_csv(f'./reports/pred_{symbol}.csv', news_date, factor, explanation, len(rules)) # TODO : use config
+                append_row_to_csv(f'{REPORT_ROOT}/pred_{symbol}.csv', news_date, factor, explanation, len(rules)) # TODO : use config
             except asyncio.TimeoutError as e:
                 print(f"LLM timeout at {news_date} for {company}: {e}")
-                append_row_to_csv(f'./reports/pred_{symbol}.csv', news_date, None, "TLE", len(rules)) # TODO : use config
+                append_row_to_csv(f'{REPORT_ROOT}/pred_{symbol}.csv', news_date, None, "TLE", len(rules)) # TODO : use config
             except ValueError as e:
                 print(f"Error parsing response at {news_date} for {company}: {e}")
-                append_row_to_csv(f'./reports/pred_{symbol}.csv', news_date, None, "REJ", len(rules)) # TODO : use config
+                append_row_to_csv(f'{REPORT_ROOT}/pred_{symbol}.csv', news_date, None, "REJ", len(rules)) # TODO : use config
         else:
             print(f"No relevant news found in the DB at {str(news_date)}.")
 
 
 def get_company_news(filename, keywords):
     news = pd.read_csv(filename)['content'].to_list()
-    news = filter_results(news, MAX_NEWS_USED, keywords)[-MAX_NEWS_USED:] # Later news are more relevant
+    news = filter_news(news, MAX_NEWS_USED, keywords)[-MAX_NEWS_USED:] # Later news are more relevant
     news = [clean_news(doc) for doc in news]
     return news
 
@@ -94,7 +102,7 @@ def parse_response(response: str) -> float:
     return float(cleaned_text)
 
 
-def filter_results(results, k, keywords):
+def filter_news(results, k, keywords):
     def custom_filter(content):
         return any(keyword.lower() in content for keyword in keywords)
 
@@ -106,39 +114,8 @@ def filter_results(results, k, keywords):
     # Closest = lowest distance
     return filtered
 
-QUERY_TEMPLATE = """
-請扮演一位專業且客觀的股市分析師，根據下方所有與 {company} 相關的新聞內容進行整體分析，評估這些消息綜合而言可能對該公司隔日的市場情緒與股價波動產生的影響。
 
-====================
-
-以下是提供的新聞資訊 :
-
-{context}
-"""
-
-def get_query(company, results):
-    context_text = "\n\n---\n\n".join([doc for doc in results])
-    prompt_template = ChatPromptTemplate.from_template(QUERY_TEMPLATE)
-    prompt = prompt_template.format(context=context_text, company=company)
-    return prompt
-
-
-def query_db(news, company, keywords):
-    query_text = get_query(company, news)
-    results = db.similarity_search_with_score(query_text, k=RAG_REF_USED)
-    return results
-
-
-def get_company_rules(company):
-    # TODO AD Hoc
-    with open("company_stock_rules.yaml", "r", encoding="utf-8") as f:
-        rules = yaml.safe_load(f)
-    company_rules = rules.get(company)
-    positive_rules = [f'如果新聞中有關於 {company} {i}的消息，則隔日股價可能上漲。' for i in company_rules.get("positive")]
-    negative_rules = [f'如果新聞中有關於 {company} {i}的消息，則隔日股價可能下跌。' for i in company_rules.get("negative")]
-    return positive_rules + negative_rules
-
-
+@retry(stop=stop_after_attempt(6), wait=wait_fixed(50))
 async def query_rag(company, change_percent, volume_change, foreign_change, avg_change, news, model_name, rules, company_rules):
     prompt = get_prompt(company, change_percent, volume_change, foreign_change, avg_change, news, rules, company_rules)
     if len(prompt) > MAX_CHAR_LENGTH:
@@ -222,9 +199,11 @@ PROMPT_TEMPLATE = """
 """
 
 
-def get_prompt(company, change_percent, volume_change, foreign_change, avg_change, news, rules, company_rules):
+def get_prompt(company, change_percent, volume_change, foreign_change, avg_change, news, rules: list[Document], company_rules):
     context = "\n\n---\n\n".join([doc for doc in news])
-    rules_text = "\n".join([doc.page_content for doc, _score in rules])
+    
+    possible_change = lambda doc: "上漲" if doc.metadata['is_price_increase'] else "下跌"
+    rules_text = "\n".join([f'當出現類似 {clean_news(doc.page_content)} 的情況時，隔日股價可能會 {possible_change(doc)}' for doc, _score in rules]) #TODO temp change
     company_rules_text = "\n".join(company_rules)
     
     prompt_template = ChatPromptTemplate.from_template(PROMPT_TEMPLATE)

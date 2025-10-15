@@ -12,7 +12,7 @@ for SYMBOL in STOCKS.keys():
     df = add_stock_price_feature(df)
     # df.info()
 
-    llm_factor = pd.read_csv(f'reports/pred_llm_rag_full/pred_{SYMBOL}.csv', parse_dates=True, index_col=0)
+    llm_factor = pd.read_csv(f'reports/deepseek_no_rag/pred_{SYMBOL}.csv', parse_dates=True, index_col=0)
     # llm_factor.info()
 
     llm_factor = llm_factor[~llm_factor.index.duplicated(keep='first')]
@@ -23,6 +23,7 @@ for SYMBOL in STOCKS.keys():
     df_merged[df_merged['factor'].isnull()]
 
     df_merged['factor'] = df_merged['factor'].fillna(0)
+    df_merged['factor'] = df_merged['factor'].clip(lower=-10, upper=10)
     # df_merged.info()
 
     df_merged['pred'] = (df_merged['factor']/100 * df_merged['y'] + df_merged['y']).shift(1)

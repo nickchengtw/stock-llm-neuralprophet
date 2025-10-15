@@ -1,31 +1,43 @@
 ollama_base_url: http://localhost:11500
 start_date: 2022-11-01
 end_date: 2025-06-30
-provider: ollama
-model_name: cwchang/llama-3-taiwan-8b-instruct
+
+# provider: ollama
+# model_name: cwchang/llama-3-taiwan-8b-instruct
+# llm_call_delay: 0
+
+# provider: ollama
+# model_name: gemma3:12b
+# llm_call_delay: 0
+# report_root: ./reports/gemma
+
+provider: openai
+model_name: deepseek/deepseek-chat-v3.1:free
+llm_call_delay: 3
+report_root: ./reports/
 
 max_news_used: 5
 max_char_length: 7500
 rag_ref_used: 15
 
 stocks:
-  - 2382
-  - 3231
+  # - 2382
+  # - 3231
   - 2330
-  - 3443
-  - 3661
-  - 3035
-  - 2345
-  - 3711
-  - 2308
-  - 2301
-  - 2385
-  - 3017
-  - 2368
-  - 3533
-  - 2376
-  - 6669
-  - 2356
-  - 2317
-  - 2454
-  - 6213
+  # - 3443
+  # - 3661
+  # - 3035
+  # - 2345
+  # - 3711
+  # - 2308
+  # - 2301
+  # - 2385
+  # - 3017
+  # - 2368
+  # - 3533
+  # - 2376
+  # - 6669
+  # - 2356
+  # - 2317  
+  # - 2454
+  # - 6213

@@ -10,8 +10,10 @@ with open("stocks.yml", "r", encoding="utf-8") as f:
 OLLAMA_BASE_URL = config["ollama_base_url"]
 START_DATE = config["start_date"]
 END_DATE = config["end_date"]
+REPORT_ROOT = config['report_root']
 PROVIDER = config["provider"]
 MODEL_NAME = config["model_name"]
+LLM_CALL_DELAY = config['llm_call_delay']
 MAX_NEWS_USED = config["max_news_used"]
 RAG_STOCKS = config["stocks"]
 MAX_CHAR_LENGTH = config["max_char_length"]
@@ -27,3 +29,4 @@ STOCKS = {
 }
 
 CHROMA_PATH = "chroma"
+DATA_PATH = "data"
