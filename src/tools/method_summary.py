@@ -1,0 +1,56 @@
+import pandas as pd
+import seaborn as sns
+import matplotlib.pyplot as plt
+import matplotlib.ticker as mtick
+
+# TODO this table is manually created, need to generate it automatically
+df = pd.read_csv('reports/all_result.csv', index_col=0)
+df.rename(columns={
+    "add_lag_share": "NeuralProphet",
+    "deepseek no RAG": "LLM",
+    "Deepseek-chat-v3-0324": "LLM + RAG",
+    }, inplace=True)
+
+def plot_method_summary(df, ylim=None):
+    plt.rcParams['font.sans-serif'] = ['Microsoft JhengHei'] # 修改中文字體
+    plt.rcParams['axes.unicode_minus'] = False # 顯示負號
+
+    # Melt into long format
+    df_melted = (df / 100).melt(var_name="Category", value_name="Value")
+
+    # Set figure size (wider and taller for clarity)
+    plt.figure(figsize=(4, 6))
+
+    colors = [
+        "#FF9999",  # light red
+        "#99FF99",  # light green
+        "#9999FF",  # light blue
+        "#FFCC99",  # light orange
+        "#CC99FF",  # light purple
+        "#FFFF99",  # light yellow
+        "#66CCCC"   # teal
+    ]
+
+    # Horizontal box plots
+    ax = sns.boxplot(
+        data=df_melted,
+        y="Value",  # Categories on Y-axis
+        x="Category",     # Values on X-axis
+        order=df.columns,  # Keep original order
+        palette=colors
+    )
+    ax.yaxis.set_major_formatter(mtick.PercentFormatter(xmax=1))  # xmax=1 if data in 0-1 range
+
+    if ylim:
+        plt.ylim(ylim)
+
+    plt.ylabel("收盤價預測 MAPE 誤差")
+    plt.xlabel("預測方式")
+    plt.title("預測方式比較")
+    plt.tight_layout()
+
+    plt.show()
+
+plot_method_summary(df)
+plot_method_summary(df, ylim=(0.0125, 0.035))
+print(df.describe())
