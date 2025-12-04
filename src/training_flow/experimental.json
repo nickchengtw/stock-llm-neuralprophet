@@ -1,0 +1,173 @@
+{
+    "default": {
+        "params": {},
+        "candidate_cols": [],
+        "top_n": 0
+    },
+    "add_period": {
+        "params": {
+            "yearly_seasonality": [
+                true
+            ],
+            "weekly_seasonality": [
+                true
+            ]
+        },
+        "candidate_cols": [
+            "yearly_seasonality",
+            "weekly_seasonality"
+        ],
+        "top_n": 1
+    },
+    "add_ar": {
+        "params": {
+            "n_lags": [
+                1,
+                2,
+                3,
+                4,
+                5,
+                6,
+                7,
+                8,
+                9,
+                10,
+                11,
+                12,
+                13,
+                14,
+                15
+            ]
+        },
+        "candidate_cols": [
+            "n_lags"
+        ],
+        "top_n": 4
+    },
+    "tune_close": {
+        "params": {
+            "yearly_seasonality": [
+                true,
+                false
+            ],
+            "weekly_seasonality": [
+                true,
+                false
+            ],
+            "use_holidays": [
+                true,
+                false
+            ]
+        },
+        "candidate_cols": [
+            "yearly_seasonality",
+            "weekly_seasonality",
+            "n_lags",
+            "use_holidays"
+        ],
+        "top_n": 1
+    },
+    "lag_vol_price": {
+        "params": {
+            "volume": [
+                0,
+                5,
+                10
+            ],
+            "high_low_diff": [
+                0,
+                5,
+                10
+            ],
+            "MA": [
+                0,
+                5,
+                10
+            ]
+        },
+        "candidate_cols": [
+            "yearly_seasonality",
+            "weekly_seasonality",
+            "n_lags",
+            "use_holidays",
+            "volume",
+            "high_low_diff",
+            "MA"
+        ],
+        "top_n": 1
+    },
+    "lag_inst": {
+        "params": {
+            "foreign": [
+                1,
+                3,
+                5
+            ],
+            "investment": [
+                1,
+                3,
+                5
+            ],
+            "dealer": [
+                1,
+                3,
+                5
+            ]
+        },
+        "candidate_cols": [
+            "yearly_seasonality",
+            "weekly_seasonality",
+            "n_lags",
+            "use_holidays",
+            "volume",
+            "high_low_diff",
+            "MA",
+            "foreign",
+            "investment",
+            "dealer"
+        ],
+        "top_n": 1
+    },
+    "lag_share": {
+        "params": {
+            "ratio_over_400_shares": [
+                0,
+                5
+            ],
+            "shareholders_400_to_600": [
+                0,
+                5
+            ],
+            "shareholders_600_to_800": [
+                0,
+                5
+            ],
+            "shareholders_800_to_1000": [
+                0,
+                5
+            ],
+            "ratio_over_1000_shares": [
+                0,
+                5
+            ]
+        },
+        "candidate_cols": [
+            "yearly_seasonality",
+            "weekly_seasonality",
+            "n_lags",
+            "use_holidays",
+            "volume",
+            "high_low_diff",
+            "MA",
+            "foreign",
+            "investment",
+            "dealer",
+            "ratio_over_400_shares",
+            "shareholders_400_to_600",
+            "shareholders_600_to_800",
+            "shareholders_800_to_1000",
+            "ratio_over_1000_shares"
+        ],
+        "top_n": 1
+    }
+}

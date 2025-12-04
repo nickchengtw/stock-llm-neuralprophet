@@ -19,7 +19,7 @@ warnings.filterwarnings(
 
 import pandas as pd
 from sklearn.model_selection import ParameterGrid
-from neuralprophet import NeuralProphet, set_log_level, set_random_seed
+from neuralprophet import NeuralProphet, set_log_level, set_random_seed, save
 
 from src.model.utils import val_mape
 from src.model.features import add_stock_price_feature
@@ -42,7 +42,7 @@ LAG_REGRESSORS = [
     'ratio_over_1000_shares',
 ]
 
-with open("src/training_flow/standard.json", "r", encoding="utf-8") as file:
+with open("src/training_flow/all_step_by_step.json", "r", encoding="utf-8") as file:
     TUNE_STEPS = json.load(file)
 
 
@@ -69,6 +69,8 @@ def train_and_eval(df, m):
 def grid_search(df, param_grid):
     results = []
     # Iterate over each combination of hyperparameters
+    best_model = None
+    prev_mape = float('inf')
     for params in ParameterGrid(param_grid):
         # Initialize the NeuralProphet model with current hyperparameters
         print(params)
@@ -88,7 +90,11 @@ def grid_search(df, param_grid):
         
         rmse, mape = train_and_eval(df[columns], m)
         results.append({**params, 'RMSE': rmse, 'MAPE': mape})
-    return results
+        if mape < prev_mape:
+            best_model = m
+            prev_mape = mape
+            print(f"New best model found with MAPE: {mape}")
+    return best_model, results
 
 
 def train_flow(symbol, report_root_dir, stock_data_path):
@@ -101,7 +107,7 @@ def train_flow(symbol, report_root_dir, stock_data_path):
     for step_name, step in TUNE_STEPS.items():
         param_grid = {**optimal_params, **step['params']}
         print(f"Grid search: {param_grid}")
-        results = grid_search(df, param_grid)
+        m, results = grid_search(df, param_grid)
         
         results_df = pd.DataFrame(results)
         results_df = results_df.sort_values(by="MAPE")
@@ -112,6 +118,7 @@ def train_flow(symbol, report_root_dir, stock_data_path):
         print('best_candidates:', best_candidates)
         optimal_params = best_candidates
         
+        save(m, f"{report_root_dir}/{symbol}/{step_name}.np")
         with open(f"{report_root_dir}/{symbol}/{step_name}.json", "w") as json_file:
             json.dump(optimal_params, json_file, indent=4)
 
