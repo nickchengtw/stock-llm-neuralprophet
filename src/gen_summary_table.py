@@ -1,5 +1,12 @@
 import os
+import json
 import pandas as pd
+
+from src.config import STOCKS
+
+with open("src/training_flow/all_step_by_step.json", "r", encoding="utf-8") as file:
+    TUNE_STEPS = json.load(file)
+
 
 def read_csvs_with_folder_name(root_dir, target_filename):
     dataframes = []
@@ -17,29 +24,20 @@ def read_csvs_with_folder_name(root_dir, target_filename):
 
     return dataframes
 
-table_index = ['default']
-summary_table = {}
-dfs = read_csvs_with_folder_name("reports/", "default.csv")
-for symbol, df in dfs:
-    top_mape = round(df.loc[0, 'MAPE'], 2)
-    summary_table[symbol] = [top_mape]
 
-for name in ['add_period', 'add_ar', 'tune_close', 'lag_vol_price', 'lag_inst', 'lag_share']:
-    table_index.append(name)
-    dfs = read_csvs_with_folder_name("reports/", f"{name}.csv")
-    for symbol, df in dfs:
-        top_mape = round(df.loc[0, 'MAPE'], 2)
-        summary_table[symbol].append(top_mape)
+def main():
+    step_names = TUNE_STEPS.keys()
+    print(step_names)
+    summary_table = {symbol: [] for symbol in STOCKS.keys()}
+    for name in step_names:
+        dfs = read_csvs_with_folder_name("reports/", f"{name}.csv")
+        for symbol, df in dfs:
+            top_mape = round(df.loc[0, 'MAPE'], 2)
+            summary_table[symbol].append(top_mape)
 
-table_index.append('with_future')
-dfs = read_csvs_with_folder_name("reports/", "lag_share.csv")
-for symbol, _ in dfs:
-    print(symbol)
-    df = pd.read_csv(f"reports/{symbol}/final_{symbol}.csv")
-    top_mape = round(df.loc[0, 'MAPE'], 2)
-    summary_table[symbol].append(top_mape)
+    summary_df = pd.DataFrame(summary_table, index=step_names).T.sort_index()
+    print(summary_df)
+    summary_df.to_csv("reports/summary.csv")
 
-summary_df = pd.DataFrame(summary_table, index=table_index).T
-summary_df['is_lower'] = summary_df['with_future'] < summary_df['lag_share']
-print(summary_df)
-summary_df.to_csv("reports/summary.csv")
+if __name__ == "__main__":
+    main()
