@@ -16,3 +16,4 @@ statsmodels
 pyyaml
 tenacity
 seaborn
+langchain_google_genai

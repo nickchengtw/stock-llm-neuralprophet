@@ -14,7 +14,7 @@ from tenacity import retry, stop_after_attempt, wait_fixed
 from src.rag.embedding import get_embedding_function
 from src.rag.api import get_model, get_reponse, LLMProvider
 from src.rag.retrieval import query_db, get_company_rules
-from src.config import START_DATE, END_DATE, MODEL_NAME, RAG_STOCKS, STOCKS, MAX_NEWS_USED, MAX_CHAR_LENGTH, CHROMA_PATH, PROVIDER, REPORT_ROOT, LLM_CALL_DELAY
+from src.config import LLM_CALL_TIMEOUT, START_DATE, END_DATE, MODEL_NAME, RAG_STOCKS, STOCKS, MAX_NEWS_USED, MAX_CHAR_LENGTH, CHROMA_PATH, PROVIDER, REPORT_ROOT, LLM_CALL_DELAY
 
 
 db = Chroma(persist_directory=CHROMA_PATH, embedding_function=get_embedding_function())
@@ -115,7 +115,7 @@ def filter_news(results, k, keywords):
     return filtered
 
 
-@retry(stop=stop_after_attempt(6), wait=wait_fixed(50))
+@retry(stop=stop_after_attempt(3), wait=wait_fixed(50))
 async def query_rag(company, change_percent, volume_change, foreign_change, avg_change, news, model_name, rules, company_rules):
     prompt = get_prompt(company, change_percent, volume_change, foreign_change, avg_change, news, rules, company_rules)
     if len(prompt) > MAX_CHAR_LENGTH:
@@ -127,7 +127,7 @@ async def query_rag(company, change_percent, volume_change, foreign_change, avg_
     model = get_model(LLMProvider(PROVIDER), model_name)
     result = await asyncio.wait_for(
         model.ainvoke(prompt),
-        timeout=15  # seconds
+        timeout=LLM_CALL_TIMEOUT  # seconds
     )
     response_text = get_reponse(LLMProvider(PROVIDER), result)
 

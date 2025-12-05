@@ -1,4 +1,4 @@
-ollama_base_url: http://localhost:11500
+ollama_base_url: http://localhost:11434
 start_date: 2022-11-01
 end_date: 2025-06-30
 
@@ -12,8 +12,11 @@ end_date: 2025-06-30
 # report_root: ./reports/gemma
 
 provider: openai
-model_name: deepseek/deepseek-chat-v3.1:free
+# TODO deepseek-chat-v3.1 is no longer free
+# model_name: deepseek/deepseek-chat-v3.1:free
+model_name: tngtech/deepseek-r1t2-chimera:free
 llm_call_delay: 3
+llm_call_timeout: 30
 report_root: ./reports/
 
 max_news_used: 5
